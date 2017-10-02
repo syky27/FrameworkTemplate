@@ -8,13 +8,12 @@ env:
   global:
     - LC_CTYPE=en_US.UTF-8
     - LANG=en_US.UTF-8
-    - WORKSPACE=Framework.xcworkspace
-    - IOS_FRAMEWORK_SCHEME="Framework-iOS"
-    - OSX_FRAMEWORK_SCHEME="Framework-macOS"
-    - TVOS_FRAMEWORK_SCHEME="Framework-tvOS"
-    - WATCHOS_FRAMEWORK_SCHEME="Framework-watchOS"
+    - WORKSPACE=FRAMEWORKNAME.xcworkspace
+    - IOS_FRAMEWORK_SCHEME="FRAMEWORKNAME-iOS"
+    - OSX_FRAMEWORK_SCHEME="FRAMEWORKNAME-macOS"
+    - TVOS_FRAMEWORK_SCHEME="FRAMEWORKNAME-tvOS"
+    - WATCHOS_FRAMEWORK_SCHEME="FRAMEWORKNAME-watchOS"
   matrix:
-    matrix:
     - DESTINATION="OS=11.0,name=iPhone X"                   SCHEME="$IOS_FRAMEWORK_SCHEME"     SDK="$IOS_SDK"     RUN_TESTS="YES"  BUILD_EXAMPLE="YES" RELEASE_READY="YES" POD_LINT="NO"
     - DESTINATION="OS=10.3.1,name=iPhone 7 Plus"            SCHEME="$IOS_FRAMEWORK_SCHEME"     SDK="$IOS_SDK"     RUN_TESTS="YES"  BUILD_EXAMPLE="YES" RELEASE_READY="YES" POD_LINT="NO"
     - DESTINATION="OS=9.0,name=iPhone 6s"                   SCHEME="$IOS_FRAMEWORK_SCHEME"     SDK="$IOS_SDK"     RUN_TESTS="YES"  BUILD_EXAMPLE="YES" RELEASE_READY="NO"  POD_LINT="NO"
@@ -30,11 +29,9 @@ before_install:
   - gem install cocoapods --no-rdoc --no-ri --no-document --quiet
   - brew update
   - brew outdated carthage || brew upgrade carthage
-  - brew install cookiecutter
-  - cookiecutter -c develop --no-input https://github.com/JetpackSwift/FrameworkTemplate
 
 before_script:
-  - cd Framework
+  - sh scripts/bootstrap
 
 script:
   - set -o pipefail
@@ -62,17 +59,22 @@ script:
 
 before_deploy:
   - carthage build --no-skip-current
-  - carthage archive Framework
+  - carthage archive FRAMEWORKNAME
 
 deploy:
   - provider: releases
     api_key:
       secure:
     file:
-      - Framework.framework.zip
+      - FRAMEWORKNAME.framework.zip
     skip_cleanup: true
     overwrite: true
     on:
-      repo: JetpackSwift/FrameworkTemplate
+      repo: FRAMEWORKGITHUBNAME/FRAMEWORKNAME
+      tags: true
+      condition: $RELEASE_READY = YES
+  - provider: script
+    script: pod trunk push
+    on:
       tags: true
       condition: $RELEASE_READY = YES

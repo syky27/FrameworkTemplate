@@ -2,10 +2,10 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "group:{{ cookiecutter.name }}.xcodeproj">
+      location = "group:FRAMEWORKNAME.xcodeproj">
    </FileRef>
    <FileRef
-      location = "group:{{ cookiecutter.name }}.playground">
+      location = "group:FRAMEWORKNAME.playground">
    </FileRef>
    <FileRef
       location = "group:scripts">
@@ -17,7 +17,7 @@
       location = "group:Cartfile.private">
    </FileRef>
    <FileRef
-      location = "group:{{ cookiecutter.name }}.podspec">
+      location = "group:FRAMEWORKNAME.podspec">
    </FileRef>
    <FileRef
       location = "group:LICENSE">
